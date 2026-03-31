@@ -112,6 +112,7 @@
     .toast-overlay.show .result-toast { transform: scale(1); }
     .result-emoji { font-size: 56px; line-height: 1; margin-bottom: 12px; }
     .result-label { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 3px; }
+    .result-label-p2 { transform: rotate(180deg); margin-bottom: 12px; }
 
     /* ── RESET CONFIRM ── */
     .reset-overlay {
@@ -344,6 +345,7 @@
 <!-- Toast -->
 <div class="toast-overlay" id="toast-overlay" onclick="hideToast()">
   <div class="result-toast">
+    <div class="result-label result-label-p2" id="result-label-p2"></div>
     <div class="result-emoji" id="result-emoji">&#x1F3B2;</div>
     <div class="result-label" id="result-label"></div>
   </div>
@@ -648,6 +650,7 @@
   function showToast(emoji, label) {
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-label').textContent = label;
+    document.getElementById('result-label-p2').textContent = label;
     document.getElementById('toast-overlay').classList.add('show');
   }
   function hideToast() { document.getElementById('toast-overlay').classList.remove('show'); }
