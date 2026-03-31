@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Duel Tracker" />
+  <meta name="theme-color" content="#000000" />
+  <title>Duel Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@600;700&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --p1: #00c9b1; --p2: #9b5de5; --bg: #0a0a0a; }
+    html, body {
+      height: 100%; width: 100%; overflow: hidden; background: var(--bg);
+      font-family: 'Share Tech Mono', monospace; touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none;
+    }
+
+    /* ── APP LAYOUT: sidebar left, panels right ── */
+    #app { display: flex; flex-direction: row; height: 100dvh; width: 100%; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 124px; flex-shrink: 0; background: #0f0f0f;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 16px 0 16px 8px; gap: 0;
+    }
+    .sidebar-row {
+      display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 10px; width: 100%;
+    }
+    .sidebar-sep { width: 110px; height: 1px; background: rgba(255,255,255,0.10); flex-shrink: 0; }
+    .sidebar-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px; height: 36px; padding: 0 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px;
+      color: rgba(255,255,255,0.35); transition: background 0.15s, color 0.15s; white-space: nowrap;
+      width: 110px;
+    }
+    .sidebar-btn:active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+    .install-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px; height: 36px; padding: 0 8px; width: 110px;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px;
+      color: rgba(255,255,255,0.35); cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 5px; text-decoration: none;
+      transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .install-btn:active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+    .reset-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px; height: 36px; padding: 0 8px; width: 110px;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px;
+      color: rgba(255,255,255,0.35); cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 5px; transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .reset-btn:active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+
+    /* ── PANELS ── */
+    #panels-right { flex: 1; display: flex; flex-direction: column; height: 100%; }
+
+    .panel {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; position: relative; overflow: hidden; gap: 10px;
+    }
+    .panel.p1 { background: linear-gradient(to top,    rgba(0,201,177,0.10), transparent); }
+    .panel.p2 {
+      background: linear-gradient(to bottom, rgba(155,93,229,0.10), transparent);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transform: rotate(180deg);
+    }
+
+    .player-label { font-size: 11px; letter-spacing: 4px; opacity: 0.5; text-transform: uppercase; }
+    .p1 .player-label { color: var(--p1); }
+    .p2 .player-label { color: var(--p2); }
+
+    .life-btn {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px; padding: 16px 28px; display: flex; flex-direction: column;
+      align-items: center; gap: 8px; cursor: pointer; width: 220px;
+      transition: transform 0.12s ease, background 0.12s ease;
+    }
+    .life-btn:active { transform: scale(0.96); background: rgba(255,255,255,0.07); }
+    .p1 .life-btn { border-color: rgba(0,201,177,0.25); }
+    .p2 .life-btn { border-color: rgba(155,93,229,0.25); }
+    .life-number {
+      font-family: 'Rajdhani', sans-serif; font-size: 64px; font-weight: 700;
+      color: #fff; line-height: 1; transition: color 0.3s; letter-spacing: -1px;
+    }
+    .life-number.dead { color: #555; }
+    .life-hint { font-size: 10px; letter-spacing: 3px; opacity: 0.35; color: #fff; }
+    .defeated { font-size: 8px; letter-spacing: 2px; color: #ff4444; opacity: 0.7; display: none; text-align: center; }
+    .defeated.visible { display: block; }
+
+    /* ── TOAST ── */
+    .toast-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .toast-overlay.show { opacity: 1; pointer-events: all; }
+    .result-toast {
+      background: #1c1c1c; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px; padding: 32px 48px; text-align: center;
+      min-width: 200px; transform: scale(0.85); transition: transform 0.2s ease;
+    }
+    .toast-overlay.show .result-toast { transform: scale(1); }
+    .result-emoji { font-size: 56px; line-height: 1; margin-bottom: 12px; }
+    .result-label { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 3px; }
+
+    /* ── RESET CONFIRM ── */
+    .reset-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .reset-overlay.open { opacity: 1; pointer-events: all; }
+    .reset-modal {
+      background: #1c1c1c; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px; padding: 32px 32px 24px; text-align: center;
+      min-width: 260px; transform: scale(0.85); transition: transform 0.2s ease;
+    }
+    .reset-overlay.open .reset-modal { transform: scale(1); }
+    .reset-modal-title { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #fff; letter-spacing: 2px; margin-bottom: 8px; }
+    .reset-modal-sub { font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.3); margin-bottom: 24px; }
+    .reset-modal-btns { display: flex; gap: 10px; }
+    .reset-modal-cancel {
+      flex: 1; padding: 13px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12);
+      background: transparent; font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.4); cursor: pointer; transition: all 0.15s;
+    }
+    .reset-modal-cancel:active { background: rgba(255,255,255,0.06); }
+    .reset-modal-confirm {
+      flex: 1; padding: 13px; border-radius: 12px; border: none;
+      background: #ff5566; font-family: 'Share Tech Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; color: #000; cursor: pointer; font-weight: 700; transition: all 0.15s;
+    }
+    .reset-modal-confirm:active { background: #cc3344; }
+
+    /* ── SHARED OVERLAY BASE ── */
+    .overlay, .overlay-p2, .log-overlay, .log-overlay-p2 {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      z-index: 100; display: flex;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+    }
+    .overlay.open, .overlay-p2.open, .log-overlay.open, .log-overlay-p2.open {
+      opacity: 1; pointer-events: all;
+    }
+
+    /* P1 edit — slides from bottom */
+    .overlay     { align-items: flex-end; }
+    .overlay.open .sheet { transform: translateY(0); }
+    .sheet {
+      background: #141414; border-radius: 24px 24px 0 0; width: 100%;
+      padding: 20px 20px 24px; max-height: 90vh; overflow-y: auto;
+      display: flex; flex-direction: column;
+      transform: translateY(100%); transition: transform 0.25s ease;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* P2 edit — slides from top */
+    .overlay-p2  { align-items: flex-start; }
+    .overlay-p2.open .sheet-p2 { transform: translateY(0); }
+    .sheet-p2 {
+      background: #141414; border-radius: 0 0 24px 24px; width: 100%;
+      padding: 20px 20px 24px; max-height: 90vh; overflow-y: auto;
+      display: flex; flex-direction: column;
+      transform: translateY(-100%); transition: transform 0.25s ease;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* P1 log — slides from bottom */
+    .log-overlay { align-items: flex-end; }
+    .log-overlay.open .log-sheet { transform: translateY(0); }
+    .log-sheet {
+      background: #141414; border-radius: 24px 24px 0 0; width: 100%;
+      max-height: 70vh; display: flex; flex-direction: column;
+      transform: translateY(20px); transition: transform 0.25s ease;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* P2 log — slides from top */
+    .log-overlay-p2 { align-items: flex-start; }
+    .log-overlay-p2.open .log-sheet-p2 { transform: translateY(0); }
+    .log-sheet-p2 {
+      background: #141414; border-radius: 0 0 24px 24px; width: 100%;
+      max-height: 70vh; display: flex; flex-direction: column;
+      transform: translateY(-20px); transition: transform 0.25s ease;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* ── SHEET SHARED ELEMENTS ── */
+    .sheet-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px; }
+    .sheet-title-label { text-align: center; font-size: 10px; letter-spacing: 4px; opacity: 0.5; margin-bottom: 2px; }
+    .sheet-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 14px; letter-spacing: 1px; }
+    .log-header { padding: 20px 24px 12px; flex-shrink: 0; }
+    .log-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px; }
+    .log-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+    .log-list { overflow-y: auto; flex: 1; padding: 8px 24px 24px; }
+    .log-empty { text-align: center; font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.2); padding: 32px 0; }
+    .log-entry { display: flex; align-items: center; justify-content: center; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 8px; font-size: 12px; }
+    .log-entry:last-child { border-bottom: none; }
+    .log-player { flex-shrink: 0; min-width: 68px; }
+    .log-player.p1 { color: #00c9b1; }
+    .log-player.p2 { color: #9b5de5; }
+    .log-arrow  { color: rgba(255,255,255,0.2); flex-shrink: 0; }
+    .log-change { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; flex-shrink: 0; min-width: 52px; }
+    .log-change.sub  { color: #ff5566; }
+    .log-change.add  { color: #33dd66; }
+    .log-change.half { color: #ff5566; }
+    .log-result { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: #fff; }
+
+    /* ── MODE TOGGLE ── */
+    .mode-toggle { display: flex; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 4px; margin-bottom: 16px; gap: 4px; }
+    .mode-btn {
+      flex: 1; padding: 8px 2px; border-radius: 9px; border: none;
+      font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.5px;
+      cursor: pointer; transition: all 0.18s ease; background: transparent; color: rgba(255,255,255,0.35);
+    }
+    .mode-btn.active-sub  { background: #ff5566; color: #000; }
+    .mode-btn.active-add  { background: #33dd66; color: #000; }
+    .mode-btn.active-half { background: #f0a500; color: #000; }
+
+    /* ── NUMPAD ── */
+    .sign-sub  { color: #ff5566; }
+    .sign-add  { color: #33dd66; }
+    .sign-half { color: #f0a500; font-size: 18px; }
+    .numpad-display {
+      background: rgba(255,255,255,0.04); border-radius: 14px;
+      padding: 10px 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; gap: 12px; min-height: 56px;
+    }
+    .numpad-sign { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; width: 24px; text-align: center; flex-shrink: 0; }
+    .numpad-value { flex: 1; font-family: 'Rajdhani', sans-serif; font-size: 38px; font-weight: 700; color: #fff; text-align: center; min-width: 0; }
+    .numpad-preview { text-align: center; font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 10px; height: 16px; letter-spacing: 1px; }
+    .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .numpad-key {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px; padding: 14px 0;
+      font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700;
+      color: #fff; cursor: pointer; text-align: center; transition: background 0.12s;
+      -webkit-user-select: none; user-select: none;
+    }
+    .numpad-key:active { background: rgba(255,255,255,0.18); }
+    .numpad-key.key-del { font-size: 16px; color: rgba(255,255,255,0.5); }
+    .numpad-key.key-00  { color: rgba(255,255,255,0.7); }
+    .confirm-btn {
+      width: 100%; padding: 14px; border-radius: 14px; border: none;
+      font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 3px;
+      font-weight: 700; cursor: pointer; transition: all 0.18s; color: #000;
+    }
+    .confirm-btn:disabled { background: rgba(255,255,255,0.1) !important; color: rgba(255,255,255,0.2); cursor: default; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes pulse-teal {
+      0%   { text-shadow: 0 0 0px rgba(0,201,177,0); }
+      50%  { text-shadow: 0 0 24px rgba(0,201,177,0.9); }
+      100% { text-shadow: 0 0 0px rgba(0,201,177,0); }
+    }
+    @keyframes pulse-purple {
+      0%   { text-shadow: 0 0 0px rgba(155,93,229,0); }
+      50%  { text-shadow: 0 0 24px rgba(155,93,229,0.9); }
+      100% { text-shadow: 0 0 0px rgba(155,93,229,0); }
+    }
+    .flash-p1 { animation: pulse-teal   0.5s ease; }
+    .flash-p2 { animation: pulse-purple 0.5s ease; }
+  </style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Duelist 2 buttons (rotated 180 to face them) -->
+    <div class="sidebar-row" style="transform:rotate(180deg);">
+      <button class="sidebar-btn" onclick="rollDice()">&#x1F3B2; DICE ROLL</button>
+      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
+      <button class="sidebar-btn" onclick="flipCoin()">&#x1FA99; COIN FLIP</button>
+      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
+      <button class="sidebar-btn" onclick="openLogP2()">&#x1F4DC; DUEL LOG</button>
+    </div>
+
+    <!-- Center: INSTALL + RESET -->
+    <div class="sidebar-row">
+      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
+      <a class="install-btn" href="https://github.com/Unbind00/duel-tracker/blob/main/README.md" target="_blank" rel="noopener">&#x1F4F2; INSTALL</a>
+      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
+      <button class="reset-btn" onclick="openResetConfirm()">&#x21BA; RESET</button>
+      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
+    </div>
+
+    <!-- Duelist 1 buttons (normal orientation) -->
+    <div class="sidebar-row">
+      <button class="sidebar-btn" onclick="rollDice()">&#x1F3B2; DICE ROLL</button>
+      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
+      <button class="sidebar-btn" onclick="flipCoin()">&#x1FA99; COIN FLIP</button>
+      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
+      <button class="sidebar-btn" onclick="openLog()">&#x1F4DC; DUEL LOG</button>
+    </div>
+  </div>
+
+  <!-- Panels: P2 top (rotated), P1 bottom -->
+  <div id="panels-right">
+    <div class="panel p2">
+      <span class="player-label">DUELIST 2</span>
+      <button class="life-btn" onclick="openEditorP2()">
+        <span class="life-number" id="lp2">8000</span>
+        <span class="life-hint">LP &middot; TAP TO EDIT</span>
+      </button>
+      <span class="defeated" id="dead2">&#x1F300; SENT TO THE SHADOW REALM</span>
+    </div>
+    <div class="panel p1">
+      <span class="player-label">DUELIST 1</span>
+      <button class="life-btn" onclick="openEditor(1)">
+        <span class="life-number" id="lp1">8000</span>
+        <span class="life-hint">LP &middot; TAP TO EDIT</span>
+      </button>
+      <span class="defeated" id="dead1">&#x1F300; SENT TO THE SHADOW REALM</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Reset Modal -->
+<div class="reset-overlay" id="reset-overlay" onclick="handleResetOverlayClick(event)">
+  <div class="reset-modal">
+    <div class="reset-modal-title">RESET DUEL?</div>
+    <div class="reset-modal-sub">THIS WILL CLEAR ALL LP AND THE DUEL LOG</div>
+    <div class="reset-modal-btns">
+      <button class="reset-modal-cancel" onclick="closeResetConfirm()">CANCEL</button>
+      <button class="reset-modal-confirm" onclick="confirmReset()">RESET</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-overlay" id="toast-overlay" onclick="hideToast()">
+  <div class="result-toast">
+    <div class="result-emoji" id="result-emoji">&#x1F3B2;</div>
+    <div class="result-label" id="result-label"></div>
+  </div>
+</div>
+
+<!-- P1 Edit Sheet — slides from bottom -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title-label" id="sheet-player-label">DUELIST 1</div>
+    <div class="sheet-title" id="sheet-main-title">EDIT DUELIST 1'S LIFE POINTS</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active-sub" id="btn-sub"  onclick="setMode('sub')">- SUB</button>
+      <button class="mode-btn"            id="btn-add"  onclick="setMode('add')">+ ADD</button>
+      <button class="mode-btn"            id="btn-half" onclick="setMode('half')">1/2 HALF</button>
+    </div>
+    <div class="numpad-display" id="p1-display">
+      <span class="numpad-sign sign-sub" id="p1-sign">-</span>
+      <span class="numpad-value" id="p1-value">0</span>
+    </div>
+    <div class="numpad-preview" id="p1-preview"></div>
+    <button class="confirm-btn" id="confirm-btn" onclick="confirmEdit()" disabled>CONFIRM</button>
+    <div class="numpad-grid" id="p1-grid">
+      <button class="numpad-key" onclick="numpadPressP1('7')">7</button>
+      <button class="numpad-key" onclick="numpadPressP1('8')">8</button>
+      <button class="numpad-key" onclick="numpadPressP1('9')">9</button>
+      <button class="numpad-key" onclick="numpadPressP1('4')">4</button>
+      <button class="numpad-key" onclick="numpadPressP1('5')">5</button>
+      <button class="numpad-key" onclick="numpadPressP1('6')">6</button>
+      <button class="numpad-key" onclick="numpadPressP1('1')">1</button>
+      <button class="numpad-key" onclick="numpadPressP1('2')">2</button>
+      <button class="numpad-key" onclick="numpadPressP1('3')">3</button>
+      <button class="numpad-key key-00" onclick="numpadPressP1('00')">00</button>
+      <button class="numpad-key" onclick="numpadPressP1('0')">0</button>
+      <button class="numpad-key key-del" onclick="numpadPressP1('del')">&#x232B;</button>
+    </div>
+  </div>
+</div>
+
+<!-- P2 Edit Sheet — slides from top -->
+<div class="overlay-p2" id="overlay-p2" onclick="handleP2OverlayClick(event)">
+  <div class="sheet-p2" id="sheet-p2">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title-label" id="sheet-p2-label">DUELIST 2</div>
+    <div class="sheet-title">EDIT DUELIST 2'S LIFE POINTS</div>
+    <div class="mode-toggle">
+      <button class="mode-btn active-sub" id="p2-btn-sub"  onclick="setModeP2('sub')">- SUB</button>
+      <button class="mode-btn"            id="p2-btn-add"  onclick="setModeP2('add')">+ ADD</button>
+      <button class="mode-btn"            id="p2-btn-half" onclick="setModeP2('half')">1/2 HALF</button>
+    </div>
+    <div class="numpad-display" id="p2-display">
+      <span class="numpad-sign sign-sub" id="p2-sign">-</span>
+      <span class="numpad-value" id="p2-value">0</span>
+    </div>
+    <div class="numpad-preview" id="p2-preview"></div>
+    <button class="confirm-btn" id="p2-confirm-btn" onclick="confirmEditP2()" disabled>CONFIRM</button>
+    <div class="numpad-grid" id="p2-grid">
+      <button class="numpad-key" onclick="numpadPress('7')">7</button>
+      <button class="numpad-key" onclick="numpadPress('8')">8</button>
+      <button class="numpad-key" onclick="numpadPress('9')">9</button>
+      <button class="numpad-key" onclick="numpadPress('4')">4</button>
+      <button class="numpad-key" onclick="numpadPress('5')">5</button>
+      <button class="numpad-key" onclick="numpadPress('6')">6</button>
+      <button class="numpad-key" onclick="numpadPress('1')">1</button>
+      <button class="numpad-key" onclick="numpadPress('2')">2</button>
+      <button class="numpad-key" onclick="numpadPress('3')">3</button>
+      <button class="numpad-key key-00" onclick="numpadPress('00')">00</button>
+      <button class="numpad-key" onclick="numpadPress('0')">0</button>
+      <button class="numpad-key key-del" onclick="numpadPress('del')">&#x232B;</button>
+    </div>
+  </div>
+</div>
+
+<!-- P1 Duel Log — slides from bottom -->
+<div class="log-overlay" id="log-overlay" onclick="handleLogOverlayClick(event)">
+  <div class="log-sheet">
+    <div class="log-header">
+      <div class="log-handle"></div>
+      <div class="log-title">DUEL LOG</div>
+    </div>
+    <div class="log-list" id="log-list">
+      <div class="log-empty" id="log-empty">NO DAMAGE YET</div>
+    </div>
+  </div>
+</div>
+
+<!-- P2 Duel Log — slides from top -->
+<div class="log-overlay-p2" id="log-overlay-p2" onclick="handleLogP2OverlayClick(event)">
+  <div class="log-sheet-p2">
+    <div class="log-header">
+      <div class="log-handle"></div>
+      <div class="log-title">DUEL LOG</div>
+    </div>
+    <div class="log-list" id="log-list-p2">
+      <div class="log-empty" id="log-empty-p2">NO DAMAGE YET</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var lp = { 1: 8000, 2: 8000 };
+  var gameLog = [];
+  var activePlayer = 1;
+  var mode = 'sub';
+  var colors = { 1: '#00c9b1', 2: '#9b5de5' };
+
+  // ── P2 NUMPAD ──
+  var p2Input = '';
+  var modeP2 = 'sub';
+
+  function openEditorP2() {
+    activePlayer = 2;
+    p2Input = ''; modeP2 = 'sub';
+    document.getElementById('p2-value').textContent = '0';
+    document.getElementById('p2-preview').textContent = '';
+    document.getElementById('p2-confirm-btn').disabled = true;
+    setModeP2('sub');
+    document.getElementById('overlay-p2').classList.add('open');
+  }
+  function closeEditorP2() { document.getElementById('overlay-p2').classList.remove('open'); }
+  function handleP2OverlayClick(e) { if (e.target === document.getElementById('overlay-p2')) closeEditorP2(); }
+
+  function setModeP2(m) {
+    modeP2 = m;
+    document.getElementById('p2-btn-sub').className  = 'mode-btn' + (m === 'sub'  ? ' active-sub'  : '');
+    document.getElementById('p2-btn-add').className  = 'mode-btn' + (m === 'add'  ? ' active-add'  : '');
+    document.getElementById('p2-btn-half').className = 'mode-btn' + (m === 'half' ? ' active-half' : '');
+    var sign = document.getElementById('p2-sign');
+    var grid = document.getElementById('p2-grid');
+    var display = document.getElementById('p2-display');
+    var confirmBtn = document.getElementById('p2-confirm-btn');
+    if (m === 'half') {
+      grid.style.display = 'none'; display.style.display = 'none';
+      var result = Math.floor(lp[2] / 2);
+      document.getElementById('p2-preview').textContent = lp[2].toLocaleString() + '  ->  ' + result.toLocaleString();
+      confirmBtn.disabled = false; confirmBtn.style.background = '#f0a500';
+    } else {
+      grid.style.display = 'grid'; display.style.display = 'flex';
+      sign.textContent = m === 'sub' ? '-' : '+';
+      sign.className = 'numpad-sign ' + (m === 'sub' ? 'sign-sub' : 'sign-add');
+      confirmBtn.style.background = colors[2];
+      p2Input = '';
+      document.getElementById('p2-value').textContent = '0';
+      document.getElementById('p2-preview').textContent = '';
+      confirmBtn.disabled = true;
+    }
+  }
+
+  function numpadPress(key) {
+    if (modeP2 === 'half') return;
+    if (key === 'del') { p2Input = p2Input.slice(0, -1); }
+    else if (key === '00') { if (p2Input.length > 0) p2Input += '00'; }
+    else { if (p2Input.length >= 6) return; p2Input += key; }
+    var val = parseInt(p2Input, 10) || 0;
+    document.getElementById('p2-value').textContent = val > 0 ? val.toLocaleString() : '0';
+    var confirmBtn = document.getElementById('p2-confirm-btn');
+    if (val > 0) {
+      var result = modeP2 === 'add' ? lp[2] + val : lp[2] - val;
+      document.getElementById('p2-preview').textContent = lp[2].toLocaleString() + '  ->  ' + result.toLocaleString();
+      confirmBtn.disabled = false;
+    } else { document.getElementById('p2-preview').textContent = ''; confirmBtn.disabled = true; }
+  }
+
+  function confirmEditP2() {
+    if (modeP2 === 'half') {
+      var prev = lp[2]; lp[2] = Math.floor(lp[2] / 2);
+      gameLog.push({ player: 2, type: 'half', change: prev - lp[2], result: lp[2] });
+    } else {
+      var val = parseInt(p2Input, 10); if (!val) return;
+      lp[2] = modeP2 === 'add' ? lp[2] + val : lp[2] - val;
+      gameLog.push({ player: 2, type: modeP2, change: val, result: lp[2] });
+    }
+    renderLP(2); closeEditorP2();
+  }
+
+  // ── P1 NUMPAD ──
+  var p1Input = '';
+
+  function openEditor(player) {
+    activePlayer = player; p1Input = ''; mode = 'sub';
+    document.getElementById('sheet-player-label').textContent = 'DUELIST ' + player;
+    document.getElementById('sheet-main-title').textContent = 'EDIT DUELIST ' + player + '\'S LIFE POINTS';
+    document.getElementById('p1-value').textContent = '0';
+    document.getElementById('p1-preview').textContent = '';
+    document.getElementById('confirm-btn').disabled = true;
+    setMode('sub');
+    document.getElementById('overlay').classList.add('open');
+  }
+  function closeEditor() { document.getElementById('overlay').classList.remove('open'); }
+  function handleOverlayClick(e) { if (e.target === document.getElementById('overlay')) closeEditor(); }
+
+  function setMode(m) {
+    mode = m;
+    document.getElementById('btn-sub').className  = 'mode-btn' + (m === 'sub'  ? ' active-sub'  : '');
+    document.getElementById('btn-add').className  = 'mode-btn' + (m === 'add'  ? ' active-add'  : '');
+    document.getElementById('btn-half').className = 'mode-btn' + (m === 'half' ? ' active-half' : '');
+    var sign = document.getElementById('p1-sign');
+    var grid = document.getElementById('p1-grid');
+    var display = document.getElementById('p1-display');
+    var confirmBtn = document.getElementById('confirm-btn');
+    if (m === 'half') {
+      grid.style.display = 'none'; display.style.display = 'none';
+      var result = Math.floor(lp[1] / 2);
+      document.getElementById('p1-preview').textContent = lp[1].toLocaleString() + '  ->  ' + result.toLocaleString();
+      confirmBtn.disabled = false; confirmBtn.style.background = '#f0a500';
+    } else {
+      grid.style.display = 'grid'; display.style.display = 'flex';
+      sign.textContent = m === 'sub' ? '-' : '+';
+      sign.className = 'numpad-sign ' + (m === 'sub' ? 'sign-sub' : 'sign-add');
+      confirmBtn.style.background = colors[1];
+      p1Input = '';
+      document.getElementById('p1-value').textContent = '0';
+      document.getElementById('p1-preview').textContent = '';
+      confirmBtn.disabled = true;
+    }
+  }
+
+  function numpadPressP1(key) {
+    if (mode === 'half') return;
+    if (key === 'del') { p1Input = p1Input.slice(0, -1); }
+    else if (key === '00') { if (p1Input.length > 0) p1Input += '00'; }
+    else { if (p1Input.length >= 6) return; p1Input += key; }
+    var val = parseInt(p1Input, 10) || 0;
+    document.getElementById('p1-value').textContent = val > 0 ? val.toLocaleString() : '0';
+    var confirmBtn = document.getElementById('confirm-btn');
+    if (val > 0) {
+      var result = mode === 'add' ? lp[1] + val : lp[1] - val;
+      document.getElementById('p1-preview').textContent = lp[1].toLocaleString() + '  ->  ' + result.toLocaleString();
+      confirmBtn.disabled = false;
+    } else { document.getElementById('p1-preview').textContent = ''; confirmBtn.disabled = true; }
+  }
+
+  function confirmEdit() {
+    if (mode === 'half') {
+      var prev = lp[1]; lp[1] = Math.floor(lp[1] / 2);
+      gameLog.push({ player: 1, type: 'half', change: prev - lp[1], result: lp[1] });
+    } else {
+      var val = parseInt(p1Input, 10); if (!val) return;
+      lp[1] = mode === 'add' ? lp[1] + val : lp[1] - val;
+      gameLog.push({ player: 1, type: mode, change: val, result: lp[1] });
+    }
+    renderLP(1); closeEditor();
+  }
+
+  function renderLP(player) {
+    var el = document.getElementById('lp' + player);
+    var deadEl = document.getElementById('dead' + player);
+    el.textContent = lp[player].toLocaleString();
+    if (lp[player] <= 0) { el.classList.add('dead'); deadEl.classList.add('visible'); }
+    else { el.classList.remove('dead'); deadEl.classList.remove('visible'); }
+    el.classList.remove('flash-p1', 'flash-p2');
+    void el.offsetWidth;
+    el.classList.add('flash-p' + player);
+  }
+
+  function openResetConfirm() { document.getElementById('reset-overlay').classList.add('open'); }
+  function closeResetConfirm() { document.getElementById('reset-overlay').classList.remove('open'); }
+  function handleResetOverlayClick(e) { if (e.target === document.getElementById('reset-overlay')) closeResetConfirm(); }
+  function confirmReset() { closeResetConfirm(); resetGame(); }
+  function resetGame() { lp[1] = 8000; lp[2] = 8000; gameLog = []; renderLP(1); renderLP(2); }
+
+  function buildLogEntries(listId, emptyId) {
+    var list  = document.getElementById(listId);
+    var empty = document.getElementById(emptyId);
+    list.querySelectorAll('.log-entry').forEach(function(e) { e.remove(); });
+    if (gameLog.length === 0) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    gameLog.slice().reverse().forEach(function(entry) {
+      var changeStr = entry.type === 'half'
+        ? '\u00f72'
+        : (entry.type === 'add' ? '+' : '-') + entry.change.toLocaleString();
+      var div = document.createElement('div');
+      div.className = 'log-entry';
+      div.innerHTML =
+        '<span class="log-player p' + entry.player + '">Duelist ' + entry.player + '</span>' +
+        '<span class="log-arrow">\u2192</span>' +
+        '<span class="log-change ' + entry.type + '">' + changeStr + '</span>' +
+        '<span class="log-arrow">\u2192</span>' +
+        '<span class="log-result">' + entry.result.toLocaleString() + '</span>';
+      list.appendChild(div);
+    });
+  }
+
+  function openLog()   { buildLogEntries('log-list',    'log-empty');    document.getElementById('log-overlay').classList.add('open'); }
+  function closeLog()  { document.getElementById('log-overlay').classList.remove('open'); }
+  function handleLogOverlayClick(e) { if (e.target === document.getElementById('log-overlay')) closeLog(); }
+
+  function openLogP2()  { buildLogEntries('log-list-p2', 'log-empty-p2'); document.getElementById('log-overlay-p2').classList.add('open'); }
+  function closeLogP2() { document.getElementById('log-overlay-p2').classList.remove('open'); }
+  function handleLogP2OverlayClick(e) { if (e.target === document.getElementById('log-overlay-p2')) closeLogP2(); }
+
+  function rollDice() {
+    var n = Math.floor(Math.random() * 6) + 1;
+    showToast('\uD83C\uDFB2', 'ROLLED ' + n);
+  }
+  function flipCoin() {
+    var heads = Math.random() < 0.5;
+    showToast('\uD83E\uDE99', heads ? 'FLIPPED HEADS' : 'FLIPPED TAILS');
+  }
+  function showToast(emoji, label) {
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-label').textContent = label;
+    document.getElementById('toast-overlay').classList.add('show');
+  }
+  function hideToast() { document.getElementById('toast-overlay').classList.remove('show'); }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(function() {});
+  }
+</script>
+</body>
+</html>
