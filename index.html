@@ -20,49 +20,69 @@
       -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none;
     }
 
-    /* ── APP LAYOUT: sidebar left, panels right ── */
-    #app { display: flex; flex-direction: row; height: 100dvh; width: 100%; }
-
-    /* ── SIDEBAR ── */
-    .sidebar {
-      width: 124px; flex-shrink: 0; background: #0f0f0f;
-      border-right: 1px solid rgba(255,255,255,0.07);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 16px 0 16px 8px; gap: 0;
-    }
-    .sidebar-row {
-      display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 10px; width: 100%;
-    }
-    .sidebar-sep { width: 110px; height: 1px; background: rgba(255,255,255,0.10); flex-shrink: 0; }
-    .sidebar-btn {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 12px; height: 36px; padding: 0 8px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 5px;
-      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px;
-      color: rgba(255,255,255,0.35); transition: background 0.15s, color 0.15s; white-space: nowrap;
-      width: 110px;
-    }
-    .sidebar-btn:active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
-    .install-btn {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 12px; height: 36px; padding: 0 8px; width: 110px;
-      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px;
-      color: rgba(255,255,255,0.35); cursor: pointer; display: flex; align-items: center;
-      justify-content: center; gap: 5px; text-decoration: none;
-      transition: background 0.15s, color 0.15s; white-space: nowrap;
-    }
-    .install-btn:active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
-    .reset-btn {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 12px; height: 36px; padding: 0 8px; width: 110px;
-      font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px;
-      color: rgba(255,255,255,0.35); cursor: pointer; display: flex; align-items: center;
-      justify-content: center; gap: 5px; transition: background 0.15s, color 0.15s; white-space: nowrap;
-    }
-    .reset-btn:active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+    /* ── APP LAYOUT ── */
+    #app { display: flex; flex-direction: column; height: 100dvh; width: 100%; }
 
     /* ── PANELS ── */
-    #panels-right { flex: 1; display: flex; flex-direction: column; height: 100%; }
+    #panels-right { flex: 1; display: flex; flex-direction: column; width: 100%; height: 100%; }
+
+    /* ── HAMBURGER BUTTON ── */
+    .hamburger-btn {
+      position: fixed; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 50; width: 44px; height: 44px;
+      background: #1a1a1a; border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50%; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+      transition: background 0.15s;
+    }
+    .hamburger-btn:active { background: rgba(255,255,255,0.12); }
+    .hamburger-line {
+      width: 18px; height: 2px; background: rgba(255,255,255,0.5); border-radius: 1px;
+    }
+
+    /* ── HAMBURGER MENU DRAWER ── */
+    .menu-overlay {
+      position: fixed; inset: 0; z-index: 150;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .menu-overlay.open { opacity: 1; pointer-events: all; }
+    .menu-drawer {
+      background: #1c1c1c; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px; padding: 28px 28px 24px; min-width: 200px;
+      transform: scale(0.85); transition: transform 0.2s ease;
+      display: flex; flex-direction: column; gap: 12px; align-items: stretch;
+    }
+    .menu-overlay.open .menu-drawer { transform: scale(1); }
+    .menu-title {
+      text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 18px;
+      font-weight: 700; color: #fff; letter-spacing: 2px; margin-bottom: 4px;
+    }
+    .menu-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px; height: 44px; padding: 0 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 2px;
+      color: rgba(255,255,255,0.5); transition: background 0.15s, color 0.15s; white-space: nowrap;
+      text-decoration: none; width: 100%;
+    }
+    .menu-btn:active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+    .menu-sep { height: 1px; background: rgba(255,255,255,0.08); }
+
+    /* ── PANEL ACTION BUTTONS ── */
+    .panel-actions {
+      display: flex; flex-direction: row; gap: 8px; margin-top: 2px;
+    }
+    .panel-action-btn {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px; height: 32px; padding: 0 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1px;
+      color: rgba(255,255,255,0.35); transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .panel-action-btn:active { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
 
     .panel {
       flex: 1; display: flex; flex-direction: column; align-items: center;
@@ -112,7 +132,6 @@
     .toast-overlay.show .result-toast { transform: scale(1); }
     .result-emoji { font-size: 56px; line-height: 1; margin-bottom: 12px; }
     .result-label { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 3px; }
-    .result-label-p2 { transform: rotate(180deg); margin-bottom: 12px; }
 
     /* ── RESET CONFIRM ── */
     .reset-overlay {
@@ -278,35 +297,12 @@
 
 <div id="app">
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <!-- Duelist 2 buttons (rotated 180 to face them) -->
-    <div class="sidebar-row" style="transform:rotate(180deg);">
-      <button class="sidebar-btn" onclick="rollDice()">&#x1F3B2; DICE ROLL</button>
-      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
-      <button class="sidebar-btn" onclick="flipCoin()">&#x1FA99; COIN FLIP</button>
-      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
-      <button class="sidebar-btn" onclick="openLogP2()">&#x1F4DC; DUEL LOG</button>
-    </div>
-
-    <!-- Center: INSTALL + RESET -->
-    <div class="sidebar-row">
-      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
-      <a class="install-btn" href="https://github.com/Unbind00/duel-tracker/blob/main/README.md" target="_blank" rel="noopener">&#x1F4F2; INSTALL</a>
-      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
-      <button class="reset-btn" onclick="openResetConfirm()">&#x21BA; RESET</button>
-      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
-    </div>
-
-    <!-- Duelist 1 buttons (normal orientation) -->
-    <div class="sidebar-row">
-      <button class="sidebar-btn" onclick="rollDice()">&#x1F3B2; DICE ROLL</button>
-      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
-      <button class="sidebar-btn" onclick="flipCoin()">&#x1FA99; COIN FLIP</button>
-      <span class="sidebar-sep" style="width:110px;height:1px;background:rgba(255,255,255,0.10);flex-shrink:0;"></span>
-      <button class="sidebar-btn" onclick="openLog()">&#x1F4DC; DUEL LOG</button>
-    </div>
-  </div>
+  <!-- Hamburger button — floats at center dividing line -->
+  <button class="hamburger-btn" onclick="openMenu()">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
 
   <!-- Panels: P2 top (rotated), P1 bottom -->
   <div id="panels-right">
@@ -316,6 +312,11 @@
         <span class="life-number" id="lp2">8000</span>
         <span class="life-hint">LP &middot; TAP TO EDIT</span>
       </button>
+      <div class="panel-actions">
+        <button class="panel-action-btn" onclick="rollDice()">ROLL</button>
+        <button class="panel-action-btn" onclick="flipCoin()">FLIP</button>
+        <button class="panel-action-btn" onclick="openLogP2()">DUEL LOG</button>
+      </div>
       <span class="defeated" id="dead2">&#x1F300; SENT TO THE SHADOW REALM</span>
     </div>
     <div class="panel p1">
@@ -324,10 +325,25 @@
         <span class="life-number" id="lp1">8000</span>
         <span class="life-hint">LP &middot; TAP TO EDIT</span>
       </button>
+      <div class="panel-actions">
+        <button class="panel-action-btn" onclick="rollDice()">ROLL</button>
+        <button class="panel-action-btn" onclick="flipCoin()">FLIP</button>
+        <button class="panel-action-btn" onclick="openLog()">DUEL LOG</button>
+      </div>
       <span class="defeated" id="dead1">&#x1F300; SENT TO THE SHADOW REALM</span>
     </div>
   </div>
 
+</div>
+
+<!-- Hamburger Menu -->
+<div class="menu-overlay" id="menu-overlay" onclick="handleMenuOverlayClick(event)">
+  <div class="menu-drawer">
+    <div class="menu-title">MENU</div>
+    <div class="menu-sep"></div>
+    <a class="menu-btn" href="https://github.com/Unbind00/duel-tracker/blob/main/README.md" target="_blank" rel="noopener">&#x1F4F2; INSTALL</a>
+    <button class="menu-btn" onclick="closeMenu(); openResetConfirm();">&#x21BA; RESET DUEL</button>
+  </div>
 </div>
 
 <!-- Reset Modal -->
@@ -345,7 +361,6 @@
 <!-- Toast -->
 <div class="toast-overlay" id="toast-overlay" onclick="hideToast()">
   <div class="result-toast">
-    <div class="result-label result-label-p2" id="result-label-p2"></div>
     <div class="result-emoji" id="result-emoji">&#x1F3B2;</div>
     <div class="result-label" id="result-label"></div>
   </div>
@@ -650,10 +665,14 @@
   function showToast(emoji, label) {
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-label').textContent = label;
-    document.getElementById('result-label-p2').textContent = label;
     document.getElementById('toast-overlay').classList.add('show');
   }
   function hideToast() { document.getElementById('toast-overlay').classList.remove('show'); }
+
+
+  function openMenu()  { document.getElementById('menu-overlay').classList.add('open'); }
+  function closeMenu() { document.getElementById('menu-overlay').classList.remove('open'); }
+  function handleMenuOverlayClick(e) { if (e.target === document.getElementById('menu-overlay')) closeMenu(); }
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(function() {});
