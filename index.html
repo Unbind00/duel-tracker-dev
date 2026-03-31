@@ -86,14 +86,20 @@
     .p1 .panel-action-btn { border-color: rgba(0,201,177,0.25); }
     .p2 .panel-action-btn { border-color: rgba(155,93,229,0.25); }
 
+    /* ── CENTER DIVIDER ── */
+    .center-divider {
+      position: fixed; left: 0; right: 0; top: 50%; z-index: 40;
+      height: 1px; background: rgba(255,255,255,0.15);
+      transform: translateY(-50%); pointer-events: none;
+    }
+
     .panel {
       flex: 1; display: flex; flex-direction: column; align-items: center;
       justify-content: center; position: relative; overflow: hidden; gap: 10px;
     }
     .panel.p1 { background: linear-gradient(to top,    rgba(0,201,177,0.10), transparent); }
     .panel.p2 {
-      background: linear-gradient(to bottom, rgba(155,93,229,0.10), transparent);
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: linear-gradient(to top, rgba(155,93,229,0.10), transparent);
       transform: rotate(180deg);
     }
 
@@ -303,6 +309,9 @@
 <body>
 
 <div id="app">
+
+  <!-- Center divider -->
+  <div class="center-divider"></div>
 
   <!-- Hamburger button — floats at center dividing line -->
   <button class="hamburger-btn" onclick="openMenu()">
