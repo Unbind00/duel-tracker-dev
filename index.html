@@ -240,6 +240,8 @@
     .log-change.sub  { color: #ff5566; }
     .log-change.add  { color: #33dd66; }
     .log-change.half { color: #ff5566; }
+    .log-change.roll { color: #f0a500; }
+    .log-change.flip { color: #f0a500; }
     .log-result { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: #fff; }
 
     /* ── MODE TOGGLE ── */
@@ -318,8 +320,8 @@
         <span class="life-hint">TAP TO EDIT</span>
       </button>
       <div class="panel-actions">
-        <button class="panel-action-btn" onclick="rollDice()">ROLL</button>
-        <button class="panel-action-btn" onclick="flipCoin()">FLIP</button>
+        <button class="panel-action-btn" onclick="rollDice(2)">ROLL</button>
+        <button class="panel-action-btn" onclick="flipCoin(2)">FLIP</button>
         <button class="panel-action-btn" onclick="openLogP2()">DUEL LOG</button>
       </div>
       <span class="defeated" id="dead2">&#x1F300; SENT TO THE SHADOW REALM</span>
@@ -331,8 +333,8 @@
         <span class="life-hint">TAP TO EDIT</span>
       </button>
       <div class="panel-actions">
-        <button class="panel-action-btn" onclick="rollDice()">ROLL</button>
-        <button class="panel-action-btn" onclick="flipCoin()">FLIP</button>
+        <button class="panel-action-btn" onclick="rollDice(1)">ROLL</button>
+        <button class="panel-action-btn" onclick="flipCoin(1)">FLIP</button>
         <button class="panel-action-btn" onclick="openLog()">DUEL LOG</button>
       </div>
       <span class="defeated" id="dead1">&#x1F300; SENT TO THE SHADOW REALM</span>
@@ -635,17 +637,26 @@
     if (gameLog.length === 0) { empty.style.display = 'block'; return; }
     empty.style.display = 'none';
     gameLog.slice().reverse().forEach(function(entry) {
-      var changeStr = entry.type === 'half'
-        ? '\u00f72'
-        : (entry.type === 'add' ? '+' : '-') + entry.change.toLocaleString();
       var div = document.createElement('div');
       div.className = 'log-entry';
-      div.innerHTML =
-        '<span class="log-player p' + entry.player + '">Duelist ' + entry.player + '</span>' +
-        '<span class="log-arrow">\u2192</span>' +
-        '<span class="log-change ' + entry.type + '">' + changeStr + '</span>' +
-        '<span class="log-arrow">\u2192</span>' +
-        '<span class="log-result">' + entry.result.toLocaleString() + '</span>';
+      if (entry.type === 'roll' || entry.type === 'flip') {
+        div.innerHTML =
+          '<span class="log-player p' + entry.player + '">Duelist ' + entry.player + '</span>' +
+          '<span class="log-arrow">\u2192</span>' +
+          '<span class="log-change ' + entry.type + '">' + entry.label + '</span>' +
+          '<span class="log-arrow">\u2192</span>' +
+          '<span class="log-result">' + entry.result + '</span>';
+      } else {
+        var changeStr = entry.type === 'half'
+          ? '\u00f72'
+          : (entry.type === 'add' ? '+' : '-') + entry.change.toLocaleString();
+        div.innerHTML =
+          '<span class="log-player p' + entry.player + '">Duelist ' + entry.player + '</span>' +
+          '<span class="log-arrow">\u2192</span>' +
+          '<span class="log-change ' + entry.type + '">' + changeStr + '</span>' +
+          '<span class="log-arrow">\u2192</span>' +
+          '<span class="log-result">' + entry.result.toLocaleString() + '</span>';
+      }
       list.appendChild(div);
     });
   }
@@ -658,15 +669,18 @@
   function closeLogP2() { document.getElementById('log-overlay-p2').classList.remove('open'); }
   function handleLogP2OverlayClick(e) { if (e.target === document.getElementById('log-overlay-p2')) closeLogP2(); }
 
-  function rollDice() {
+  function rollDice(player) {
     const n = Math.floor(Math.random() * 6) + 1;
     const words = ["ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX"];
     const result = words[n - 1];
+    gameLog.push({ player: player, type: 'roll', label: 'ROLL', result: result });
     showToast('\uD83C\uDFB2', result);
   }
-  function flipCoin() {
+  function flipCoin(player) {
     var heads = Math.random() < 0.5;
-    showToast('\uD83E\uDE99', heads ? 'HEADS' : 'TAILS');
+    var result = heads ? 'HEADS' : 'TAILS';
+    gameLog.push({ player: player, type: 'flip', label: 'FLIP', result: result });
+    showToast('\uD83E\uDE99', result);
   }
   function showToast(emoji, label) {
     document.getElementById('result-emoji').textContent = emoji;
