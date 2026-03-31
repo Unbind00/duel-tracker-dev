@@ -636,8 +636,10 @@
   function handleLogP2OverlayClick(e) { if (e.target === document.getElementById('log-overlay-p2')) closeLogP2(); }
 
   function rollDice() {
-    var n = Math.floor(Math.random() * 6) + 1;
-    showToast('\uD83C\uDFB2', 'ROLLED ' + n);
+    const n = Math.floor(Math.random() * 6) + 1;
+    const words = ["ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX"];
+    const result = words[n - 1];
+    showToast('\uD83C\uDFB2', result);
   }
   function flipCoin() {
     var heads = Math.random() < 0.5;
