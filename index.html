@@ -511,7 +511,10 @@
     var confirmBtn = document.getElementById('p2-confirm-btn');
     if (m === 'half') {
       grid.style.opacity = '0.3'; grid.style.pointerEvents = 'none';
-      display.style.opacity = '0.3'; display.style.pointerEvents = 'none';
+      display.style.opacity = '1'; display.style.pointerEvents = 'none';
+      sign.textContent = '\u00f7';
+      sign.className = 'numpad-sign sign-half';
+      document.getElementById('p2-value').textContent = '2';
       var result = Math.floor(lp[2] / 2);
       document.getElementById('p2-preview').textContent = lp[2].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false; confirmBtn.style.background = '#f0a500';
@@ -582,7 +585,10 @@
     var confirmBtn = document.getElementById('confirm-btn');
     if (m === 'half') {
       grid.style.opacity = '0.3'; grid.style.pointerEvents = 'none';
-      display.style.opacity = '0.3'; display.style.pointerEvents = 'none';
+      display.style.opacity = '1'; display.style.pointerEvents = 'none';
+      sign.textContent = '\u00f7';
+      sign.className = 'numpad-sign sign-half';
+      document.getElementById('p1-value').textContent = '2';
       var result = Math.floor(lp[1] / 2);
       document.getElementById('p1-preview').textContent = lp[1].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false; confirmBtn.style.background = '#f0a500';
