@@ -326,27 +326,27 @@
       <span class="player-label">DUELIST 2</span>
       <button class="life-btn" onclick="openEditorP2()">
         <span class="life-number" id="lp2">8000</span>
-        <span class="life-hint">TAP TO EDIT</span>
+        <span class="life-hint" id="hint2">TAP TO EDIT</span>
       </button>
       <div class="panel-actions">
         <button class="panel-action-btn" onclick="rollDice(2)">&#x1F3B2;</button>
         <button class="panel-action-btn" onclick="flipCoin(2)">&#x1FA99;</button>
         <button class="panel-action-btn" onclick="openLogP2()">&#x1F4DC;</button>
       </div>
-      <span class="defeated" id="dead2">&#x1F300; SENT TO THE SHADOW REALM</span>
+      <span class="defeated" id="dead2" style="display:none;"></span>
     </div>
     <div class="panel p1">
       <span class="player-label">DUELIST 1</span>
       <button class="life-btn" onclick="openEditor(1)">
         <span class="life-number" id="lp1">8000</span>
-        <span class="life-hint">TAP TO EDIT</span>
+        <span class="life-hint" id="hint1">TAP TO EDIT</span>
       </button>
       <div class="panel-actions">
         <button class="panel-action-btn" onclick="rollDice(1)">&#x1F3B2;</button>
         <button class="panel-action-btn" onclick="flipCoin(1)">&#x1FA99;</button>
         <button class="panel-action-btn" onclick="openLog()">&#x1F4DC;</button>
       </div>
-      <span class="defeated" id="dead1">&#x1F300; SENT TO THE SHADOW REALM</span>
+      <span class="defeated" id="dead1" style="display:none;"></span>
     </div>
   </div>
 
@@ -625,9 +625,15 @@
   function renderLP(player) {
     var el = document.getElementById('lp' + player);
     var deadEl = document.getElementById('dead' + player);
+    var hintEl = document.getElementById('hint' + player);
     el.textContent = lp[player].toLocaleString();
-    if (lp[player] <= 0) { el.classList.add('dead'); deadEl.classList.add('visible'); }
-    else { el.classList.remove('dead'); deadEl.classList.remove('visible'); }
+    if (lp[player] <= 0) {
+      el.classList.add('dead'); deadEl.classList.add('visible');
+      if (hintEl) hintEl.textContent = 'SENT TO THE SHADOW REALM';
+    } else {
+      el.classList.remove('dead'); deadEl.classList.remove('visible');
+      if (hintEl) hintEl.textContent = 'TAP TO EDIT';
+    }
     el.classList.remove('flash-p1', 'flash-p2');
     void el.offsetWidth;
     el.classList.add('flash-p' + player);
