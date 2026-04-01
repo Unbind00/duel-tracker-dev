@@ -510,12 +510,14 @@
     var display = document.getElementById('p2-display');
     var confirmBtn = document.getElementById('p2-confirm-btn');
     if (m === 'half') {
-      grid.style.display = 'none'; display.style.display = 'none';
+      grid.style.opacity = '0.3'; grid.style.pointerEvents = 'none';
+      display.style.opacity = '0.3'; display.style.pointerEvents = 'none';
       var result = Math.floor(lp[2] / 2);
       document.getElementById('p2-preview').textContent = lp[2].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false; confirmBtn.style.background = '#f0a500';
     } else {
-      grid.style.display = 'grid'; display.style.display = 'flex';
+      grid.style.opacity = '1'; grid.style.pointerEvents = '';
+      display.style.opacity = '1'; display.style.pointerEvents = '';
       sign.textContent = m === 'sub' ? '-' : '+';
       sign.className = 'numpad-sign ' + (m === 'sub' ? 'sign-sub' : 'sign-add');
       confirmBtn.style.background = colors[2];
@@ -579,12 +581,14 @@
     var display = document.getElementById('p1-display');
     var confirmBtn = document.getElementById('confirm-btn');
     if (m === 'half') {
-      grid.style.display = 'none'; display.style.display = 'none';
+      grid.style.opacity = '0.3'; grid.style.pointerEvents = 'none';
+      display.style.opacity = '0.3'; display.style.pointerEvents = 'none';
       var result = Math.floor(lp[1] / 2);
       document.getElementById('p1-preview').textContent = lp[1].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false; confirmBtn.style.background = '#f0a500';
     } else {
-      grid.style.display = 'grid'; display.style.display = 'flex';
+      grid.style.opacity = '1'; grid.style.pointerEvents = '';
+      display.style.opacity = '1'; display.style.pointerEvents = '';
       sign.textContent = m === 'sub' ? '-' : '+';
       sign.className = 'numpad-sign ' + (m === 'sub' ? 'sign-sub' : 'sign-add');
       confirmBtn.style.background = colors[1];
