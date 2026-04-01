@@ -238,7 +238,7 @@
     .log-empty { text-align: center; font-size: 11px; letter-spacing: 3px; color: rgba(255,255,255,0.2); padding: 32px 0; }
     .log-entry { display: flex; align-items: center; justify-content: center; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 8px; font-size: 12px; }
     .log-entry:last-child { border-bottom: none; }
-    .log-player { flex-shrink: 0; min-width: 68px; }
+    .log-player { flex-shrink: 0; min-width: 68px; font-weight: 700; font-family: 'Rajdhani', sans-serif; font-size: 15px; }
     .log-player.p1 { color: #00c9b1; }
     .log-player.p2 { color: #9b5de5; }
     .log-arrow  { color: rgba(255,255,255,0.2); flex-shrink: 0; }
@@ -650,7 +650,7 @@
       div.className = 'log-entry';
       if (entry.type === 'roll' || entry.type === 'flip') {
         div.innerHTML =
-          '<span class="log-player p' + entry.player + '">Duelist ' + entry.player + '</span>' +
+          '<span class="log-player p' + entry.player + '">DUELIST ' + entry.player + '</span>' +
           '<span class="log-arrow">\u2192</span>' +
           '<span class="log-change ' + entry.type + '">' + entry.label + '</span>' +
           '<span class="log-arrow">\u2192</span>' +
@@ -660,7 +660,7 @@
           ? '\u00f72'
           : (entry.type === 'add' ? '+' : '-') + entry.change.toLocaleString();
         div.innerHTML =
-          '<span class="log-player p' + entry.player + '">Duelist ' + entry.player + '</span>' +
+          '<span class="log-player p' + entry.player + '">DUELIST ' + entry.player + '</span>' +
           '<span class="log-arrow">\u2192</span>' +
           '<span class="log-change ' + entry.type + '">' + changeStr + '</span>' +
           '<span class="log-arrow">\u2192</span>' +
