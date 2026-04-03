@@ -26,9 +26,9 @@ The entire app lives in a single file: **`index.html`** contains all CSS, HTML, 
 
 ### Layout
 
-The app is split into two regions:
-- **Sidebar** (left, 124px wide) — dice roll, coin flip, duel log, install link, reset button. The top section of the sidebar is `rotate(180deg)` so Player 2 can read their buttons from the opposite side of the device.
-- **Panels** (right, flex) — two stacked player panels. The P2 panel (top) is CSS `rotate(180deg)` so both players face their own panel when the device lies flat between them.
+The screen is split into two stacked panels — Duelist 1 on the bottom, Duelist 2 on the top. The P2 panel (and its controls) are CSS `rotate(180deg)` so both players face their own side when the device lies flat between them.
+
+Each player panel contains their own dice (🎲) and coin (🪙) buttons, and a duel log (📜) button. A center ☰ menu provides install instructions and the "RESET DUEL" option (resets both players to 8000 LP and clears the log).
 
 ### JavaScript State
 
