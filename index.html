@@ -141,7 +141,13 @@
     .toast-overlay.show .result-toast { transform: scale(1); }
     .result-label-p2 { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 3px; transform: rotate(180deg); margin-bottom: 16px; }
     .toast-inner-divider { width: 80%; height: 1px; background: rgba(255,255,255,0.08); margin: 14px 0; }
-    .result-emoji { font-size: 56px; line-height: 1; margin-bottom: 16px; }
+    .result-emoji { font-size: 56px; line-height: 1; margin-bottom: 16px; display: inline-block; }
+    @keyframes emoji-spin {
+      0%   { transform: rotate(0deg) scale(0.7); }
+      60%  { transform: rotate(540deg) scale(1.15); }
+      100% { transform: rotate(720deg) scale(1); }
+    }
+    .result-emoji.spin { animation: emoji-spin 0.6s ease-out forwards; }
     .result-label { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 3px; }
 
     /* ── RESET CONFIRM ── */
@@ -723,10 +729,14 @@
     showToast('\uD83E\uDE99', result);
   }
   function showToast(emoji, label) {
-    document.getElementById('result-emoji').textContent = emoji;
+    var emojiEl = document.getElementById('result-emoji');
+    emojiEl.textContent = emoji;
     document.getElementById('result-label').textContent = label;
     document.getElementById('result-label-p2').textContent = label;
     document.getElementById('toast-overlay').classList.add('show');
+    emojiEl.classList.remove('spin');
+    void emojiEl.offsetWidth;
+    emojiEl.classList.add('spin');
   }
   function hideToast() { document.getElementById('toast-overlay').classList.remove('show'); }
 
