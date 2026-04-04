@@ -142,8 +142,8 @@
     .result-label-p2 { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 3px; transform: rotate(180deg); margin-bottom: 16px; opacity: 0; }
     .result-label { opacity: 0; }
     @keyframes label-fadein { from { opacity: 0; } to { opacity: 1; } }
-    .toast-overlay.show .result-label,
-    .toast-overlay.show .result-label-p2 { animation: label-fadein 0.2s ease-out 0.6s forwards; }
+    .result-label.reveal,
+    .result-label-p2.reveal { animation: label-fadein 0.2s ease-out 0.6s forwards; }
     .toast-inner-divider { width: 80%; height: 1px; background: rgba(255,255,255,0.08); margin: 14px 0; }
     .result-emoji { font-size: 56px; line-height: 1; margin-bottom: 16px; display: inline-block; cursor: pointer; }
     .result-emoji:active { transform: scale(0.88); }
@@ -742,13 +742,19 @@
   }
   function showToast(emoji, label) {
     var emojiEl = document.getElementById('result-emoji');
+    var labelEl = document.getElementById('result-label');
+    var labelP2El = document.getElementById('result-label-p2');
     emojiEl.textContent = emoji;
-    document.getElementById('result-label').textContent = label;
-    document.getElementById('result-label-p2').textContent = label;
+    labelEl.textContent = label;
+    labelP2El.textContent = label;
     document.getElementById('toast-overlay').classList.add('show');
     emojiEl.classList.remove('spin');
+    labelEl.classList.remove('reveal');
+    labelP2El.classList.remove('reveal');
     void emojiEl.offsetWidth;
     emojiEl.classList.add('spin');
+    labelEl.classList.add('reveal');
+    labelP2El.classList.add('reveal');
   }
   function hideToast() { document.getElementById('toast-overlay').classList.remove('show'); }
 
