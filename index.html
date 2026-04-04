@@ -324,6 +324,72 @@
     }
     .flash-p1 { animation: pulse-teal   0.5s ease; }
     .flash-p2 { animation: pulse-purple 0.5s ease; }
+
+    /* ── LANDSCAPE MODE ── */
+    @media (orientation: landscape) {
+
+      /* Panels: left/right split, each rotated to face its player */
+      #panels-right { flex-direction: row; }
+      .panel.p1 {
+        transform: rotate(90deg);
+        background: linear-gradient(to right, rgba(0,201,177,0.10), transparent);
+      }
+      .panel.p2 {
+        transform: rotate(-90deg);
+        background: linear-gradient(to left, rgba(155,93,229,0.10), transparent);
+      }
+
+      /* Center divider becomes vertical */
+      .center-divider {
+        top: 0; bottom: 0; left: 50%; right: auto;
+        width: 1px; height: auto;
+        transform: translateX(-50%);
+      }
+
+      /* Toast result labels face each player's long edge */
+      .result-label    { transform: rotate(90deg); }
+      .result-label-p2 { transform: rotate(-90deg); }
+
+      /* P1 edit sheet — slides from right edge */
+      .overlay { align-items: center; justify-content: flex-end; }
+      .sheet {
+        width: 50%; height: 100%; max-height: none;
+        border-radius: 24px 0 0 24px;
+        border-top: none; border-left: 1px solid rgba(255,255,255,0.08);
+        transform: translateX(100%);
+      }
+      .overlay.open .sheet { transform: translateX(0); }
+
+      /* P2 edit sheet — slides from left edge, no rotation */
+      .overlay-p2 { align-items: center; justify-content: flex-start; }
+      .sheet-p2 {
+        width: 50%; height: 100%; max-height: none;
+        border-radius: 0 24px 24px 0;
+        border-bottom: none; border-right: 1px solid rgba(255,255,255,0.08);
+        transform: translateX(-100%);
+      }
+      .overlay-p2.open .sheet-p2 { transform: translateX(0); }
+
+      /* P1 log sheet — slides from right edge */
+      .log-overlay { align-items: center; justify-content: flex-end; }
+      .log-sheet {
+        width: 50%; height: 100%; max-height: none;
+        border-radius: 24px 0 0 24px;
+        border-top: none; border-left: 1px solid rgba(255,255,255,0.08);
+        transform: translateX(100%);
+      }
+      .log-overlay.open .log-sheet { transform: translateX(0); }
+
+      /* P2 log sheet — slides from left edge, no rotation */
+      .log-overlay-p2 { align-items: center; justify-content: flex-start; }
+      .log-sheet-p2 {
+        width: 50%; height: 100%; max-height: none;
+        border-radius: 0 24px 24px 0;
+        border-bottom: none; border-right: 1px solid rgba(255,255,255,0.08);
+        transform: translateX(-100%);
+      }
+      .log-overlay-p2.open .log-sheet-p2 { transform: translateX(0); }
+    }
   </style>
 </head>
 <body>
