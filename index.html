@@ -139,7 +139,11 @@
       display: flex; flex-direction: column; align-items: center;
     }
     .toast-overlay.show .result-toast { transform: scale(1); }
-    .result-label-p2 { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 3px; transform: rotate(180deg); margin-bottom: 16px; }
+    .result-label-p2 { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 3px; transform: rotate(180deg); margin-bottom: 16px; opacity: 0; }
+    .result-label { opacity: 0; }
+    @keyframes label-fadein { from { opacity: 0; } to { opacity: 1; } }
+    .toast-overlay.show .result-label,
+    .toast-overlay.show .result-label-p2 { animation: label-fadein 0.2s ease-out 0.6s forwards; }
     .toast-inner-divider { width: 80%; height: 1px; background: rgba(255,255,255,0.08); margin: 14px 0; }
     .result-emoji { font-size: 56px; line-height: 1; margin-bottom: 16px; display: inline-block; }
     @keyframes emoji-spin {
