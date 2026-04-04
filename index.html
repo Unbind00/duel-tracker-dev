@@ -290,6 +290,15 @@
       font-weight: 700; cursor: pointer; transition: all 0.18s; color: #000;
     }
     .confirm-btn:disabled { background: rgba(255,255,255,0.1) !important; color: rgba(255,255,255,0.2); cursor: default; }
+    .btn-row { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-row .confirm-btn { flex: 1; width: auto; }
+    .cancel-btn {
+      flex: 1; padding: 14px; border-radius: 14px; border: none;
+      font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 3px;
+      font-weight: 700; cursor: pointer; transition: all 0.18s;
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);
+    }
+    .cancel-btn:active { background: rgba(255,255,255,0.15); }
 
     /* ── ANIMATIONS ── */
     @keyframes pulse-teal {
@@ -413,7 +422,10 @@
       <button class="numpad-key" onclick="numpadPressP1('0')">0</button>
       <button class="numpad-key key-del" onclick="numpadPressP1('del')">⌫</button>
     </div>
-    <button class="confirm-btn" id="confirm-btn" onclick="confirmEdit()" disabled>CONFIRM</button>
+    <div class="btn-row">
+      <button class="cancel-btn" onclick="closeEditor()">CANCEL</button>
+      <button class="confirm-btn" id="confirm-btn" onclick="confirmEdit()" disabled>CONFIRM</button>
+    </div>
   </div>
 </div>
 
@@ -447,7 +459,10 @@
       <button class="numpad-key" onclick="numpadPress('0')">0</button>
       <button class="numpad-key key-del" onclick="numpadPress('del')">⌫</button>
     </div>
-    <button class="confirm-btn" id="p2-confirm-btn" onclick="confirmEditP2()" disabled>CONFIRM</button>
+    <div class="btn-row">
+      <button class="cancel-btn" onclick="closeEditorP2()">CANCEL</button>
+      <button class="confirm-btn" id="p2-confirm-btn" onclick="confirmEditP2()" disabled>CONFIRM</button>
+    </div>
   </div>
 </div>
 
