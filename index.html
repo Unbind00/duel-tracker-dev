@@ -240,7 +240,6 @@
 
     /* ── SHEET SHARED ELEMENTS ── */
     .sheet-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px; }
-    .sheet-title-label { text-align: center; font-size: 10px; letter-spacing: 4px; opacity: 0.5; margin-bottom: 2px; }
     .sheet-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 16px; letter-spacing: 1px; }
     .log-header { padding: 20px 24px 12px; flex-shrink: 0; }
     .log-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px; }
@@ -381,7 +380,6 @@
       /* Compact LP sheet contents so everything fits without scrolling */
       .sheet, .sheet-p2 { padding: 12px 16px 12px; }
       .sheet-handle { display: none; }
-      .sheet-title-label { display: none; }
       .sheet-title { font-size: 16px; margin-bottom: 10px; }
       .mode-toggle { margin-bottom: 10px; }
       .mode-btn { padding: 6px 2px; font-size: 12px; }
@@ -478,7 +476,6 @@
 <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title-label" id="sheet-player-label">DUELIST 1</div>
     <div class="sheet-title" id="sheet-main-title">EDIT DUELIST 1'S LIFE POINTS</div>
     <div class="mode-toggle">
       <button class="mode-btn active-sub" id="btn-sub"  onclick="setMode('sub')">- SUB</button>
@@ -514,7 +511,6 @@
 <div class="overlay-p2" id="overlay-p2" onclick="handleP2OverlayClick(event)">
   <div class="sheet-p2" id="sheet-p2">
     <div class="sheet-handle"></div>
-    <div class="sheet-title-label" id="sheet-p2-label">DUELIST 2</div>
     <div class="sheet-title">EDIT DUELIST 2'S LIFE POINTS</div>
     <div class="mode-toggle">
       <button class="mode-btn active-sub" id="p2-btn-sub"  onclick="setModeP2('sub')">- SUB</button>
@@ -653,7 +649,6 @@
 
   function openEditor(player) {
     activePlayer = player; p1Input = ''; mode = 'sub';
-    document.getElementById('sheet-player-label').textContent = 'DUELIST ' + player;
     document.getElementById('sheet-main-title').textContent = 'EDIT DUELIST ' + player + '\'S LIFE POINTS';
     document.getElementById('p1-value').textContent = '0';
     document.getElementById('confirm-btn').disabled = true;
