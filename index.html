@@ -283,8 +283,7 @@
     }
     .numpad-sign { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; width: 24px; text-align: center; flex-shrink: 0; }
     .numpad-value { flex: 1; font-family: 'Rajdhani', sans-serif; font-size: 38px; font-weight: 700; color: #fff; text-align: center; min-width: 0; }
-    .numpad-preview { text-align: center; font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 10px; height: 16px; letter-spacing: 1px; }
-    .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 26px; }
     .numpad-key {
       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
       border-radius: 10px; padding: 14px 0;
@@ -389,8 +388,7 @@
       .numpad-display { min-height: 42px; padding: 6px 12px; margin-bottom: 6px; }
       .numpad-sign { font-size: 22px; }
       .numpad-value { font-size: 28px; }
-      .numpad-preview { margin-bottom: 6px; height: 12px; font-size: 10px; }
-      .numpad-grid { gap: 5px; margin-top: 6px; }
+      .numpad-grid { gap: 5px; margin-top: 24px; }
       .numpad-key { padding: 6px 0; font-size: 18px; border-radius: 8px; }
       .numpad-key.key-del { font-size: 18px; }
       .confirm-btn { padding: 10px; }
@@ -491,7 +489,6 @@
       <span class="numpad-sign sign-sub" id="p1-sign">-</span>
       <span class="numpad-value" id="p1-value">0</span>
     </div>
-    <div class="numpad-preview" id="p1-preview"></div>
     <div class="numpad-grid" id="p1-grid">
       <button class="numpad-key" onclick="numpadPressP1('7')">7</button>
       <button class="numpad-key" onclick="numpadPressP1('8')">8</button>
@@ -528,7 +525,6 @@
       <span class="numpad-sign sign-sub" id="p2-sign">-</span>
       <span class="numpad-value" id="p2-value">0</span>
     </div>
-    <div class="numpad-preview" id="p2-preview"></div>
     <div class="numpad-grid" id="p2-grid">
       <button class="numpad-key" onclick="numpadPress('7')">7</button>
       <button class="numpad-key" onclick="numpadPress('8')">8</button>
@@ -592,7 +588,6 @@
     activePlayer = 2;
     p2Input = ''; modeP2 = 'sub';
     document.getElementById('p2-value').textContent = '0';
-    document.getElementById('p2-preview').textContent = '';
     document.getElementById('p2-confirm-btn').disabled = true;
     setModeP2('sub');
     document.getElementById('overlay-p2').classList.add('open');
@@ -615,8 +610,6 @@
       sign.textContent = '\u00f7';
       sign.className = 'numpad-sign sign-half';
       document.getElementById('p2-value').textContent = '2';
-      var result = Math.floor(lp[2] / 2);
-      document.getElementById('p2-preview').textContent = lp[2].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false; confirmBtn.style.background = colors[2];
     } else {
       grid.style.opacity = '1'; grid.style.pointerEvents = '';
@@ -626,7 +619,6 @@
       confirmBtn.style.background = colors[2];
       p2Input = '';
       document.getElementById('p2-value').textContent = '0';
-      document.getElementById('p2-preview').textContent = '';
       confirmBtn.disabled = true;
     }
   }
@@ -640,10 +632,8 @@
     document.getElementById('p2-value').textContent = val > 0 ? val.toLocaleString() : '0';
     var confirmBtn = document.getElementById('p2-confirm-btn');
     if (val > 0) {
-      var result = modeP2 === 'add' ? lp[2] + val : lp[2] - val;
-      document.getElementById('p2-preview').textContent = lp[2].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false;
-    } else { document.getElementById('p2-preview').textContent = ''; confirmBtn.disabled = true; }
+    } else { confirmBtn.disabled = true; }
   }
 
   function confirmEditP2() {
@@ -666,7 +656,6 @@
     document.getElementById('sheet-player-label').textContent = 'DUELIST ' + player;
     document.getElementById('sheet-main-title').textContent = 'EDIT DUELIST ' + player + '\'S LIFE POINTS';
     document.getElementById('p1-value').textContent = '0';
-    document.getElementById('p1-preview').textContent = '';
     document.getElementById('confirm-btn').disabled = true;
     setMode('sub');
     document.getElementById('overlay').classList.add('open');
@@ -689,8 +678,6 @@
       sign.textContent = '\u00f7';
       sign.className = 'numpad-sign sign-half';
       document.getElementById('p1-value').textContent = '2';
-      var result = Math.floor(lp[1] / 2);
-      document.getElementById('p1-preview').textContent = lp[1].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false; confirmBtn.style.background = colors[1];
     } else {
       grid.style.opacity = '1'; grid.style.pointerEvents = '';
@@ -700,7 +687,6 @@
       confirmBtn.style.background = colors[1];
       p1Input = '';
       document.getElementById('p1-value').textContent = '0';
-      document.getElementById('p1-preview').textContent = '';
       confirmBtn.disabled = true;
     }
   }
@@ -714,10 +700,8 @@
     document.getElementById('p1-value').textContent = val > 0 ? val.toLocaleString() : '0';
     var confirmBtn = document.getElementById('confirm-btn');
     if (val > 0) {
-      var result = mode === 'add' ? lp[1] + val : lp[1] - val;
-      document.getElementById('p1-preview').textContent = lp[1].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false;
-    } else { document.getElementById('p1-preview').textContent = ''; confirmBtn.disabled = true; }
+    } else { confirmBtn.disabled = true; }
   }
 
   function confirmEdit() {
