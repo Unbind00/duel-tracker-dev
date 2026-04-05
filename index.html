@@ -282,6 +282,7 @@
     }
     .numpad-sign { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; width: 24px; text-align: center; flex-shrink: 0; }
     .numpad-value { flex: 1; font-family: 'Rajdhani', sans-serif; font-size: 38px; font-weight: 700; color: #fff; text-align: center; min-width: 0; }
+    .numpad-suffix { font-family: 'Rajdhani', sans-serif; font-size: 38px; font-weight: 700; color: #fff; opacity: 0.25; }
     .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .numpad-key {
       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
@@ -386,6 +387,7 @@
       .numpad-display { min-height: 42px; padding: 6px 12px; margin-bottom: 0; }
       .numpad-sign { font-size: 22px; }
       .numpad-value { font-size: 28px; }
+      .numpad-suffix { font-size: 28px; }
       .numpad-grid { gap: 5px; margin-top: 10px; }
       .numpad-key { padding: 6px 0; font-size: 18px; border-radius: 8px; }
       .numpad-key.key-del { font-size: 18px; }
@@ -496,7 +498,7 @@
       <button class="numpad-key" onclick="numpadPressP1('1')">1</button>
       <button class="numpad-key" onclick="numpadPressP1('2')">2</button>
       <button class="numpad-key" onclick="numpadPressP1('3')">3</button>
-      <button class="numpad-key key-00" onclick="numpadPressP1('00')">00</button>
+      <span class="numpad-key" style="visibility:hidden"></span>
       <button class="numpad-key" onclick="numpadPressP1('0')">0</button>
       <button class="numpad-key key-del" onclick="numpadPressP1('del')">⌫</button>
     </div>
@@ -531,7 +533,7 @@
       <button class="numpad-key" onclick="numpadPress('1')">1</button>
       <button class="numpad-key" onclick="numpadPress('2')">2</button>
       <button class="numpad-key" onclick="numpadPress('3')">3</button>
-      <button class="numpad-key key-00" onclick="numpadPress('00')">00</button>
+      <span class="numpad-key" style="visibility:hidden"></span>
       <button class="numpad-key" onclick="numpadPress('0')">0</button>
       <button class="numpad-key key-del" onclick="numpadPress('del')">⌫</button>
     </div>
@@ -622,14 +624,15 @@
   function numpadPress(key) {
     if (modeP2 === 'half') return;
     if (key === 'del') { p2Input = p2Input.slice(0, -1); }
-    else if (key === '00') { if (p2Input.length > 0) p2Input += '00'; }
     else { if (p2Input.length >= 6) return; p2Input += key; }
-    var val = parseInt(p2Input, 10) || 0;
-    document.getElementById('p2-value').textContent = val > 0 ? val.toLocaleString() : '0';
-    var confirmBtn = document.getElementById('p2-confirm-btn');
-    if (val > 0) {
-      confirmBtn.disabled = false;
-    } else { confirmBtn.disabled = true; }
+    var valEl = document.getElementById('p2-value');
+    if (p2Input.length > 0 && parseInt(p2Input, 10) > 0) {
+      valEl.innerHTML = p2Input + '<span class="numpad-suffix">00</span>';
+    } else {
+      p2Input = '';
+      valEl.textContent = '0';
+    }
+    document.getElementById('p2-confirm-btn').disabled = p2Input.length === 0;
   }
 
   function confirmEditP2() {
@@ -637,7 +640,7 @@
       var prev = lp[2]; lp[2] = Math.floor(lp[2] / 2);
       gameLog.push({ player: 2, type: 'half', change: prev - lp[2], result: lp[2] });
     } else {
-      var val = parseInt(p2Input, 10); if (!val) return;
+      var val = parseInt(p2Input + '00', 10); if (!val) return;
       lp[2] = modeP2 === 'add' ? lp[2] + val : lp[2] - val;
       gameLog.push({ player: 2, type: modeP2, change: val, result: lp[2] });
     }
@@ -689,14 +692,15 @@
   function numpadPressP1(key) {
     if (mode === 'half') return;
     if (key === 'del') { p1Input = p1Input.slice(0, -1); }
-    else if (key === '00') { if (p1Input.length > 0) p1Input += '00'; }
     else { if (p1Input.length >= 6) return; p1Input += key; }
-    var val = parseInt(p1Input, 10) || 0;
-    document.getElementById('p1-value').textContent = val > 0 ? val.toLocaleString() : '0';
-    var confirmBtn = document.getElementById('confirm-btn');
-    if (val > 0) {
-      confirmBtn.disabled = false;
-    } else { confirmBtn.disabled = true; }
+    var valEl = document.getElementById('p1-value');
+    if (p1Input.length > 0 && parseInt(p1Input, 10) > 0) {
+      valEl.innerHTML = p1Input + '<span class="numpad-suffix">00</span>';
+    } else {
+      p1Input = '';
+      valEl.textContent = '0';
+    }
+    document.getElementById('confirm-btn').disabled = p1Input.length === 0;
   }
 
   function confirmEdit() {
@@ -704,7 +708,7 @@
       var prev = lp[1]; lp[1] = Math.floor(lp[1] / 2);
       gameLog.push({ player: 1, type: 'half', change: prev - lp[1], result: lp[1] });
     } else {
-      var val = parseInt(p1Input, 10); if (!val) return;
+      var val = parseInt(p1Input + '00', 10); if (!val) return;
       lp[1] = mode === 'add' ? lp[1] + val : lp[1] - val;
       gameLog.push({ player: 1, type: mode, change: val, result: lp[1] });
     }
