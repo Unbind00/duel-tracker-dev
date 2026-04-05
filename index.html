@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="Duel Tracker" />
@@ -201,7 +201,7 @@
     .overlay.open .sheet { transform: translateY(0); }
     .sheet {
       background: #141414; border-radius: 24px 24px 0 0; width: 100%;
-      padding: 20px 20px 24px; max-height: 90vh; overflow-y: auto;
+      padding: 20px; max-height: 90vh; overflow-y: auto;
       display: flex; flex-direction: column;
       transform: translateY(100%); transition: transform 0.25s ease;
       border-top: 1px solid rgba(255,255,255,0.08);
@@ -212,7 +212,7 @@
     .overlay-p2.open .sheet-p2 { transform: translateY(0) rotate(180deg); }
     .sheet-p2 {
       background: #141414; border-radius: 0 0 24px 24px; width: 100%;
-      padding: 20px 20px 24px; max-height: 90vh; overflow-y: auto;
+      padding: 20px; max-height: 90vh; overflow-y: auto;
       display: flex; flex-direction: column;
       transform: translateY(-100%) rotate(180deg); transition: transform 0.25s ease;
       border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -240,8 +240,7 @@
 
     /* ── SHEET SHARED ELEMENTS ── */
     .sheet-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px; }
-    .sheet-title-label { text-align: center; font-size: 10px; letter-spacing: 4px; opacity: 0.5; margin-bottom: 2px; }
-    .sheet-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 14px; letter-spacing: 1px; }
+    .sheet-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 16px; letter-spacing: 1px; }
     .log-header { padding: 20px 24px 12px; flex-shrink: 0; }
     .log-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px; }
     .log-title { text-align: center; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 1px; }
@@ -278,13 +277,13 @@
     .sign-half { color: #f0a500; font-size: 18px; }
     .numpad-display {
       background: rgba(255,255,255,0.04); border-radius: 14px;
-      padding: 10px 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.08);
+      padding: 10px 18px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.08);
       display: flex; align-items: center; gap: 12px; min-height: 56px;
     }
     .numpad-sign { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; width: 24px; text-align: center; flex-shrink: 0; }
     .numpad-value { flex: 1; font-family: 'Rajdhani', sans-serif; font-size: 38px; font-weight: 700; color: #fff; text-align: center; min-width: 0; }
-    .numpad-preview { text-align: center; font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 10px; height: 16px; letter-spacing: 1px; }
-    .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .numpad-suffix { font-family: 'Rajdhani', sans-serif; font-size: 38px; font-weight: 700; color: #fff; opacity: 0.25; }
+    .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .numpad-key {
       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
       border-radius: 10px; padding: 14px 0;
@@ -307,7 +306,7 @@
       flex: 1; padding: 14px; border-radius: 14px; border: none;
       font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 3px;
       font-weight: 700; cursor: pointer; transition: all 0.18s;
-      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.08); color: #fff;
     }
     .cancel-btn:active { background: rgba(255,255,255,0.15); }
 
@@ -324,6 +323,78 @@
     }
     .flash-p1 { animation: pulse-teal   0.5s ease; }
     .flash-p2 { animation: pulse-purple 0.5s ease; }
+
+    /* ── LANDSCAPE MODE ── */
+    @media (orientation: landscape) {
+
+      /* Panels: left/right split — same 0°/180° rotations as portrait, just split horizontally */
+      /* P2 stays on the left (rotate 180° preserved), P1 on the right (no rotation, preserved) */
+      #panels-right { flex-direction: row; }
+
+      /* Center divider becomes vertical */
+      .center-divider {
+        top: 0; bottom: 0; left: 50%; right: auto;
+        width: 1px; height: auto;
+        transform: translateX(-50%);
+      }
+
+      /* P1 edit sheet — slides from right edge */
+      .overlay { align-items: center; justify-content: flex-end; }
+      .sheet {
+        width: 50%; height: 100%; max-height: none;
+        border-radius: 24px 0 0 24px;
+        border-top: none; border-left: 1px solid rgba(255,255,255,0.08);
+        transform: translateX(100%);
+      }
+      .overlay.open .sheet { transform: translateX(0); }
+
+      /* P2 edit sheet — slides from left edge, keeps rotate(180deg) for P2 readability */
+      .overlay-p2 { align-items: center; justify-content: flex-start; }
+      .sheet-p2 {
+        width: 50%; height: 100%; max-height: none;
+        border-radius: 0 24px 24px 0;
+        border-bottom: none; border-right: 1px solid rgba(255,255,255,0.08);
+        transform: translateX(-100%) rotate(180deg);
+      }
+      .overlay-p2.open .sheet-p2 { transform: translateX(0) rotate(180deg); }
+
+      /* P1 log sheet — slides from right edge */
+      .log-overlay { align-items: center; justify-content: flex-end; }
+      .log-sheet {
+        width: 50%; height: 100%; max-height: none;
+        border-radius: 24px 0 0 24px;
+        border-top: none; border-left: 1px solid rgba(255,255,255,0.08);
+        transform: translateX(100%);
+      }
+      .log-overlay.open .log-sheet { transform: translateX(0); }
+
+      /* P2 log sheet — slides from left edge, keeps rotate(180deg) for P2 readability */
+      .log-overlay-p2 { align-items: center; justify-content: flex-start; }
+      .log-sheet-p2 {
+        width: 50%; height: 100%; max-height: none;
+        border-radius: 0 24px 24px 0;
+        border-bottom: none; border-right: 1px solid rgba(255,255,255,0.08);
+        transform: translateX(-100%) rotate(180deg);
+      }
+      .log-overlay-p2.open .log-sheet-p2 { transform: translateX(0) rotate(180deg); }
+
+      /* Compact LP sheet contents so everything fits without scrolling */
+      .sheet, .sheet-p2 { padding: 12px 16px 12px; }
+      .sheet-handle { display: none; }
+      .sheet-title { font-size: 16px; margin-bottom: 10px; }
+      .mode-toggle { margin-bottom: 10px; }
+      .mode-btn { padding: 6px 2px; font-size: 12px; }
+      .numpad-display { min-height: 42px; padding: 6px 12px; margin-bottom: 0; }
+      .numpad-sign { font-size: 22px; }
+      .numpad-value { font-size: 28px; }
+      .numpad-suffix { font-size: 28px; }
+      .numpad-grid { gap: 5px; margin-top: 10px; }
+      .numpad-key { padding: 6px 0; font-size: 18px; border-radius: 8px; }
+      .numpad-key.key-del { font-size: 18px; }
+      .confirm-btn { padding: 10px; }
+      .cancel-btn { padding: 10px; }
+      .btn-row { margin-top: 10px; gap: 8px; }
+    }
   </style>
 </head>
 <body>
@@ -407,7 +478,6 @@
 <div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title-label" id="sheet-player-label">DUELIST 1</div>
     <div class="sheet-title" id="sheet-main-title">EDIT DUELIST 1'S LIFE POINTS</div>
     <div class="mode-toggle">
       <button class="mode-btn active-sub" id="btn-sub"  onclick="setMode('sub')">- SUB</button>
@@ -418,7 +488,6 @@
       <span class="numpad-sign sign-sub" id="p1-sign">-</span>
       <span class="numpad-value" id="p1-value">0</span>
     </div>
-    <div class="numpad-preview" id="p1-preview"></div>
     <div class="numpad-grid" id="p1-grid">
       <button class="numpad-key" onclick="numpadPressP1('7')">7</button>
       <button class="numpad-key" onclick="numpadPressP1('8')">8</button>
@@ -429,7 +498,7 @@
       <button class="numpad-key" onclick="numpadPressP1('1')">1</button>
       <button class="numpad-key" onclick="numpadPressP1('2')">2</button>
       <button class="numpad-key" onclick="numpadPressP1('3')">3</button>
-      <button class="numpad-key key-00" onclick="numpadPressP1('00')">00</button>
+      <span class="numpad-key" style="visibility:hidden"></span>
       <button class="numpad-key" onclick="numpadPressP1('0')">0</button>
       <button class="numpad-key key-del" onclick="numpadPressP1('del')">⌫</button>
     </div>
@@ -444,7 +513,6 @@
 <div class="overlay-p2" id="overlay-p2" onclick="handleP2OverlayClick(event)">
   <div class="sheet-p2" id="sheet-p2">
     <div class="sheet-handle"></div>
-    <div class="sheet-title-label" id="sheet-p2-label">DUELIST 2</div>
     <div class="sheet-title">EDIT DUELIST 2'S LIFE POINTS</div>
     <div class="mode-toggle">
       <button class="mode-btn active-sub" id="p2-btn-sub"  onclick="setModeP2('sub')">- SUB</button>
@@ -455,7 +523,6 @@
       <span class="numpad-sign sign-sub" id="p2-sign">-</span>
       <span class="numpad-value" id="p2-value">0</span>
     </div>
-    <div class="numpad-preview" id="p2-preview"></div>
     <div class="numpad-grid" id="p2-grid">
       <button class="numpad-key" onclick="numpadPress('7')">7</button>
       <button class="numpad-key" onclick="numpadPress('8')">8</button>
@@ -466,7 +533,7 @@
       <button class="numpad-key" onclick="numpadPress('1')">1</button>
       <button class="numpad-key" onclick="numpadPress('2')">2</button>
       <button class="numpad-key" onclick="numpadPress('3')">3</button>
-      <button class="numpad-key key-00" onclick="numpadPress('00')">00</button>
+      <span class="numpad-key" style="visibility:hidden"></span>
       <button class="numpad-key" onclick="numpadPress('0')">0</button>
       <button class="numpad-key key-del" onclick="numpadPress('del')">⌫</button>
     </div>
@@ -513,13 +580,13 @@
 
   // ── P2 NUMPAD ──
   var p2Input = '';
+  var p2Exact = false;
   var modeP2 = 'sub';
 
   function openEditorP2() {
     activePlayer = 2;
-    p2Input = ''; modeP2 = 'sub';
+    p2Input = ''; p2Exact = false; modeP2 = 'sub';
     document.getElementById('p2-value').textContent = '0';
-    document.getElementById('p2-preview').textContent = '';
     document.getElementById('p2-confirm-btn').disabled = true;
     setModeP2('sub');
     document.getElementById('overlay-p2').classList.add('open');
@@ -542,8 +609,6 @@
       sign.textContent = '\u00f7';
       sign.className = 'numpad-sign sign-half';
       document.getElementById('p2-value').textContent = '2';
-      var result = Math.floor(lp[2] / 2);
-      document.getElementById('p2-preview').textContent = lp[2].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false; confirmBtn.style.background = colors[2];
     } else {
       grid.style.opacity = '1'; grid.style.pointerEvents = '';
@@ -551,26 +616,36 @@
       sign.textContent = m === 'sub' ? '-' : '+';
       sign.className = 'numpad-sign ' + (m === 'sub' ? 'sign-sub' : 'sign-add');
       confirmBtn.style.background = colors[2];
-      p2Input = '';
+      p2Input = ''; p2Exact = false;
       document.getElementById('p2-value').textContent = '0';
-      document.getElementById('p2-preview').textContent = '';
       confirmBtn.disabled = true;
     }
   }
 
   function numpadPress(key) {
     if (modeP2 === 'half') return;
-    if (key === 'del') { p2Input = p2Input.slice(0, -1); }
-    else if (key === '00') { if (p2Input.length > 0) p2Input += '00'; }
-    else { if (p2Input.length >= 6) return; p2Input += key; }
-    var val = parseInt(p2Input, 10) || 0;
-    document.getElementById('p2-value').textContent = val > 0 ? val.toLocaleString() : '0';
+    if (key === 'del') {
+      p2Input = p2Input.slice(0, -1);
+      if (p2Input.length === 0 || !p2Input.endsWith('0')) p2Exact = false;
+    } else {
+      if (p2Input.length >= 6) return;
+      p2Input += key;
+      if (key === '0') p2Exact = true;
+    }
+    var parsed = parseInt(p2Input, 10);
+    if (!parsed) { p2Input = ''; p2Exact = false; }
+    var valEl = document.getElementById('p2-value');
     var confirmBtn = document.getElementById('p2-confirm-btn');
-    if (val > 0) {
-      var result = modeP2 === 'add' ? lp[2] + val : lp[2] - val;
-      document.getElementById('p2-preview').textContent = lp[2].toLocaleString() + '  ->  ' + result.toLocaleString();
+    if (!p2Input.length) {
+      valEl.textContent = '0';
+      confirmBtn.disabled = true;
+    } else if (p2Exact) {
+      valEl.textContent = parsed.toLocaleString();
       confirmBtn.disabled = false;
-    } else { document.getElementById('p2-preview').textContent = ''; confirmBtn.disabled = true; }
+    } else {
+      valEl.innerHTML = p2Input + '<span class="numpad-suffix">00</span>';
+      confirmBtn.disabled = false;
+    }
   }
 
   function confirmEditP2() {
@@ -578,7 +653,7 @@
       var prev = lp[2]; lp[2] = Math.floor(lp[2] / 2);
       gameLog.push({ player: 2, type: 'half', change: prev - lp[2], result: lp[2] });
     } else {
-      var val = parseInt(p2Input, 10); if (!val) return;
+      var val = p2Exact ? parseInt(p2Input, 10) : parseInt(p2Input + '00', 10); if (!val) return;
       lp[2] = modeP2 === 'add' ? lp[2] + val : lp[2] - val;
       gameLog.push({ player: 2, type: modeP2, change: val, result: lp[2] });
     }
@@ -587,13 +662,12 @@
 
   // ── P1 NUMPAD ──
   var p1Input = '';
+  var p1Exact = false;
 
   function openEditor(player) {
-    activePlayer = player; p1Input = ''; mode = 'sub';
-    document.getElementById('sheet-player-label').textContent = 'DUELIST ' + player;
+    activePlayer = player; p1Input = ''; p1Exact = false; mode = 'sub';
     document.getElementById('sheet-main-title').textContent = 'EDIT DUELIST ' + player + '\'S LIFE POINTS';
     document.getElementById('p1-value').textContent = '0';
-    document.getElementById('p1-preview').textContent = '';
     document.getElementById('confirm-btn').disabled = true;
     setMode('sub');
     document.getElementById('overlay').classList.add('open');
@@ -616,8 +690,6 @@
       sign.textContent = '\u00f7';
       sign.className = 'numpad-sign sign-half';
       document.getElementById('p1-value').textContent = '2';
-      var result = Math.floor(lp[1] / 2);
-      document.getElementById('p1-preview').textContent = lp[1].toLocaleString() + '  ->  ' + result.toLocaleString();
       confirmBtn.disabled = false; confirmBtn.style.background = colors[1];
     } else {
       grid.style.opacity = '1'; grid.style.pointerEvents = '';
@@ -625,26 +697,36 @@
       sign.textContent = m === 'sub' ? '-' : '+';
       sign.className = 'numpad-sign ' + (m === 'sub' ? 'sign-sub' : 'sign-add');
       confirmBtn.style.background = colors[1];
-      p1Input = '';
+      p1Input = ''; p1Exact = false;
       document.getElementById('p1-value').textContent = '0';
-      document.getElementById('p1-preview').textContent = '';
       confirmBtn.disabled = true;
     }
   }
 
   function numpadPressP1(key) {
     if (mode === 'half') return;
-    if (key === 'del') { p1Input = p1Input.slice(0, -1); }
-    else if (key === '00') { if (p1Input.length > 0) p1Input += '00'; }
-    else { if (p1Input.length >= 6) return; p1Input += key; }
-    var val = parseInt(p1Input, 10) || 0;
-    document.getElementById('p1-value').textContent = val > 0 ? val.toLocaleString() : '0';
+    if (key === 'del') {
+      p1Input = p1Input.slice(0, -1);
+      if (p1Input.length === 0 || !p1Input.endsWith('0')) p1Exact = false;
+    } else {
+      if (p1Input.length >= 6) return;
+      p1Input += key;
+      if (key === '0') p1Exact = true;
+    }
+    var parsed = parseInt(p1Input, 10);
+    if (!parsed) { p1Input = ''; p1Exact = false; }
+    var valEl = document.getElementById('p1-value');
     var confirmBtn = document.getElementById('confirm-btn');
-    if (val > 0) {
-      var result = mode === 'add' ? lp[1] + val : lp[1] - val;
-      document.getElementById('p1-preview').textContent = lp[1].toLocaleString() + '  ->  ' + result.toLocaleString();
+    if (!p1Input.length) {
+      valEl.textContent = '0';
+      confirmBtn.disabled = true;
+    } else if (p1Exact) {
+      valEl.textContent = parsed.toLocaleString();
       confirmBtn.disabled = false;
-    } else { document.getElementById('p1-preview').textContent = ''; confirmBtn.disabled = true; }
+    } else {
+      valEl.innerHTML = p1Input + '<span class="numpad-suffix">00</span>';
+      confirmBtn.disabled = false;
+    }
   }
 
   function confirmEdit() {
@@ -652,7 +734,7 @@
       var prev = lp[1]; lp[1] = Math.floor(lp[1] / 2);
       gameLog.push({ player: 1, type: 'half', change: prev - lp[1], result: lp[1] });
     } else {
-      var val = parseInt(p1Input, 10); if (!val) return;
+      var val = p1Exact ? parseInt(p1Input, 10) : parseInt(p1Input + '00', 10); if (!val) return;
       lp[1] = mode === 'add' ? lp[1] + val : lp[1] - val;
       gameLog.push({ player: 1, type: mode, change: val, result: lp[1] });
     }
